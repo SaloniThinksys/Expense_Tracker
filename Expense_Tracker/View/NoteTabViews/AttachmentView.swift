@@ -1,0 +1,103 @@
+//
+//  AttachmentView.swift
+//  Expense Tracker
+//
+//  Created by Saloni Singh on 02/04/25.
+//
+
+import SwiftUI
+import PhotosUI
+
+struct AttachmentView: View {
+    //properties for file attachments
+    @State private var presentImporter = false
+    @State private var selectedFileURL: URL?
+    
+    //properties for choose photo or videos
+    @ObservedObject var viewModel: SharedImageViewModel
+    @State private var showSheet: Bool = false
+    
+    //properties for take photo and videos
+    @State private var image = UIImage()
+    @State private var showCamera: Bool = false
+    
+    //properties for scan documents
+    
+    //properties for scan text
+    
+    var body: some View {
+        Menu{
+            attachFile()
+            choosePhotoVideo()
+            takePhotoVideo()
+            scanText()
+            scanDoc()
+            
+        } label: {
+            Image(systemName: "paperclip.circle.fill")
+        }
+        .fileImporter(
+            isPresented: $presentImporter,
+            allowedContentTypes: [.pdf, .jpeg, .png, .plainText, .rtf],
+            allowsMultipleSelection: false
+        ) { result in  // for file attachments
+            switch result {
+                case .success(let urls):
+                    if let url = urls.first {  // Extract the first file
+                        selectedFileURL = url
+                        print("Selected File: \(url)")
+                    }
+                case .failure(let error):
+                    print("File Import Error: \(error.localizedDescription)")
+                }
+        }
+        .sheet(isPresented: $showSheet) {  // to choose photo and videos
+            ImagePicker(sourceType: .photoLibrary, selectedImage: $viewModel.image)
+        }
+        .sheet(isPresented: $showCamera) {
+            ImagePicker(sourceType: .camera, selectedImage: self.$image)
+        }
+
+    }
+    
+    @ViewBuilder
+    func attachFile() -> some View {
+        Button("Attach Files") {
+            presentImporter = true
+        }
+    }
+    
+    @ViewBuilder
+    private func choosePhotoVideo() -> some View {
+        Button("Choose Photo or Video") {
+            showSheet = true
+        }
+
+    }
+    
+    @ViewBuilder
+    func takePhotoVideo() -> some View {
+        Button("Take Photo or Video") {
+            showCamera = true
+        }
+    }
+    
+    @ViewBuilder
+    func scanDoc() -> some View {
+        Button("Scan Document") {
+            
+        }
+    }
+    
+    @ViewBuilder
+    func scanText() -> some View {
+        Button("Scan Text") {
+            
+        }
+    }
+    
+}
+
+//#Preview {
+//    AttachmentView(image: )
+//}
