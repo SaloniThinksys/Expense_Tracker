@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct NoteView: View {
+    //scannedText
+    var initialText: String = ""
+    
     @State private var addNoteText: String = ""
     @State private var copiedText: String? = nil
     @ObservedObject var viewModel: SharedImageViewModel
@@ -26,6 +29,7 @@ struct NoteView: View {
                         .onAppear {
                             model.undoManager = undoManager
                             model.image = viewModel.image
+                            model.addNoteText = initialText
                         }
                 } else {
                     Image(uiImage: model.image)
@@ -38,6 +42,7 @@ struct NoteView: View {
                         .onAppear {
                             model.undoManager = undoManager
                             model.image = viewModel.image
+                            model.addNoteText = initialText
                         }
                 }
                     

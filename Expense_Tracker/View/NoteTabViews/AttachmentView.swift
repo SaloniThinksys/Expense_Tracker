@@ -9,6 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct AttachmentView: View {
+    
     //properties for file attachments
     @State private var presentImporter = false
     @State private var selectedFileURL: URL?
@@ -22,8 +23,14 @@ struct AttachmentView: View {
     @State private var showCamera: Bool = false
     
     //properties for scan documents
+    @State private var showDocScanner = false
+    @State private var scannedDocumentImage: UIImage?
     
     //properties for scan text
+    @State private var scannedText = ""
+    @State private var showTextScanner = false
+    @State private var showNoteView = false
+
     
     var body: some View {
         Menu{
@@ -54,8 +61,26 @@ struct AttachmentView: View {
         .sheet(isPresented: $showSheet) {  // to choose photo and videos
             ImagePicker(sourceType: .photoLibrary, selectedImage: $viewModel.image)
         }
-        .sheet(isPresented: $showCamera) {
+        .sheet(isPresented: $showCamera) { // to take or record photo and videos
             ImagePicker(sourceType: .camera, selectedImage: self.$image)
+        }
+        .sheet(isPresented: $showNoteView) {
+            NoteView(initialText: scannedText, viewModel: viewModel)
+        }
+        .sheet(isPresented: $showTextScanner) {
+            TextScannerView(scannedText: $scannedText)
+        }
+        .sheet(isPresented: $showDocScanner) {
+            DocumentScannerView { image in
+                scannedDocumentImage = image
+                viewModel.image = image
+                showNoteView = true
+            }
+        }
+        .onChange(of: scannedText) {
+            if !scannedText.isEmpty {
+                showNoteView = true
+            }
         }
 
     }
@@ -85,19 +110,16 @@ struct AttachmentView: View {
     @ViewBuilder
     func scanDoc() -> some View {
         Button("Scan Document") {
-            
+            showDocScanner = true
         }
     }
     
     @ViewBuilder
     func scanText() -> some View {
         Button("Scan Text") {
-            
+            showTextScanner = true
         }
     }
     
 }
 
-//#Preview {
-//    AttachmentView(image: )
-//}
