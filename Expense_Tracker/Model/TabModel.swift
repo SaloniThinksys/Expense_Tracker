@@ -7,31 +7,25 @@
 
 import SwiftUI
 
-enum TabModel: String {
+enum TabModel: String, CaseIterable {
     case recents = "Recents"
     case search = "Filter"
     case charts = "Charts"
     case addnote = "AddNote"
     case settings = "Settings"
     
-    @ViewBuilder
-    var tabContent:  some View{
+    var systemImage: String {
         switch self {
         case .recents:
-            Image(systemName: "calendar")
-            Text(self.rawValue)
+            return "calendar"
         case .search:
-            Image(systemName: "magnifyingglass")
-            Text(self.rawValue)
+            return "magnifyingglass"
         case .charts:
-            Image(systemName: "chart.bar.xaxis")
-            Text(self.rawValue)
+            return "chart.bar.xaxis"
         case .addnote:
-            Image(systemName: "list.clipboard.fill")
-            Text(self.rawValue)
+            return "note.text"
         case .settings:
-            Image(systemName: "gearshape")
-            Text(self.rawValue)
+            return "gearshape"
         }
     }
 }

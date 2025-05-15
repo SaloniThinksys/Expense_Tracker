@@ -41,7 +41,11 @@ struct AttachmentView: View {
             scanDoc()
             
         } label: {
-            Image(systemName: "paperclip.circle.fill")
+            Image(systemName: "paperclip")
+                .font(.caption)
+                .bold()
+                .foregroundStyle(appTint)
+                //.padding()
         }
         .fileImporter(
             isPresented: $presentImporter,
@@ -65,7 +69,7 @@ struct AttachmentView: View {
             ImagePicker(sourceType: .camera, selectedImage: self.$image)
         }
         .sheet(isPresented: $showNoteView) {
-            NoteView(initialText: scannedText, viewModel: viewModel)
+            AddNoteView(initialText: scannedText, viewModel: viewModel)
         }
         .sheet(isPresented: $showTextScanner) {
             TextScannerView(scannedText: $scannedText)

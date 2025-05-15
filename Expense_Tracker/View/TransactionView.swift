@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct TransactionView: View {
     //env properties
@@ -120,6 +121,20 @@ struct TransactionView: View {
             let transaction = TransactionModel(title: title, remarks: remarks, amount: amount, dateAdded: dateAdded, category: category, tintColor: tint)
             context.insert(transaction)
         }
+        Task {
+            do {
+                //Save context BEFORE computing summary
+                try context.save()
+
+                let summary = try await SummaryCalculator().computeSummary()
+                SharedDataManager.shared.save(summary: summary)
+                WidgetCenter.shared.reloadAllTimelines()
+            } catch {
+                print("Failed to save context or compute summary: \(error)")
+            }
+        }
+        
+        sendTransactionNotification()
         
         //dismissing view
         dismiss()
@@ -180,6 +195,31 @@ struct TransactionView: View {
         
         return formatter
     }
+    
+    //push notification
+    func sendTransactionNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = category == .income ? "New Income Added 💰" : "New Expense Recorded 💸"
+        content.body = "\(title): \(currencyString(amount))"
+        content.sound = .default
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)
+
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: trigger
+        )
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("❌ Notification error: \(error.localizedDescription)")
+            } else {
+                print("✅ Local notification scheduled.")
+            }
+        }
+    }
+
 }
 
 #Preview {

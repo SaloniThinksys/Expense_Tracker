@@ -69,5 +69,5 @@ struct TransactionCardView: View {
 }
 
 #Preview {
-    ChoosePhotoVideoView()
+    ContentView()
 }

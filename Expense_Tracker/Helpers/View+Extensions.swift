@@ -46,3 +46,11 @@ extension View {
         }
     }
 }
+
+//extension LinearGradient {
+//    static let purpleGradient = LinearGradient(
+//        gradient: Gradient(colors: [Color.purple, Color.white.opacity(0.7)]),
+//        startPoint: .topLeading,
+//        endPoint: .bottomTrailing
+//    )
+//}
